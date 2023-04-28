@@ -7,9 +7,8 @@
             </div>
             <div class="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
                 <NuxtLink to="/travels/add">
-                    <button type="button"
-                        class="block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Add
-                        travel</button>
+                    <Button type="button">Add
+                        travel</Button>
                 </NuxtLink>
             </div>
         </div>
@@ -71,14 +70,16 @@
 </template>
 
 <script setup lang="ts">
+import Button from "~/components/Button.vue"
 import type { ITravel } from "~/types/travels"
-import {formatTime} from '~/utils/DateTime'
+import { formatTime } from '~/utils/DateTime'
 
 const { data } = await useFetch<Array<ITravel>>('/api/travels/')
 
 const travels = computed(() => {
     return data.value?.map(travel => {
         return {
+            id: travel.id,
             arrival: formatTime(new Date(travel.arrival)),
             departure: formatTime(new Date(travel.departure)),
             image: travel.image,

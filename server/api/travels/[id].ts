@@ -15,7 +15,7 @@ export default defineEventHandler(({ node, context }) => {
         departure: getDateValue(new Date()),
         price: 50000,
         rating: 65,
-        image: "https://source.unsplash.com/random"
+        image: "https://picsum.photos/500"
     }
 
 

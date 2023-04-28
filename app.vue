@@ -19,14 +19,15 @@
                                 src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600" alt="Your Company">
                         </div>
                         <div class="hidden sm:-my-px sm:ml-6 sm:flex sm:space-x-8">
-                            <!-- Current: "border-indigo-500 text-gray-900", Default: "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700" -->
+                            <!-- Current: "border-indigo-500 text-gray-900", Default: "" -->
                             <NuxtLink to="/"
-                                class="border-indigo-500 text-gray-900 inline-flex items-center border-b-2 px-1 pt-1 text-sm font-medium"
-                                aria-current="page">Dashboard</NuxtLink>
-                            <NuxtLink to="/travels"
+                                class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center border-b-2 px-1 pt-1 text-sm font-medium"
+                                active-class="router-active" aria-current-value="page">Dashboard
+                            </NuxtLink>
+                            <NuxtLink to="/travels" aria-current-value="page" active-class="router-active"
                                 class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center border-b-2 px-1 pt-1 text-sm font-medium">
                                 Travels</NuxtLink>
-                            <NuxtLink to="/bookings"
+                            <NuxtLink to="/bookings" aria-current-value="page" active-class="router-active"
                                 class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center border-b-2 px-1 pt-1 text-sm font-medium">
                                 Bookings</NuxtLink>
 
@@ -40,16 +41,10 @@
                             aria-controls="mobile-menu" aria-expanded="false">
                             <span class="sr-only">Open main menu</span>
                             <!-- Menu open: "hidden", Menu closed: "block" -->
-                            <svg class="block h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                                stroke="currentColor" aria-hidden="true">
-                                <path stroke-linecap="round" stroke-linejoin="round"
-                                    d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
-                            </svg>
+                            <XMarkIcon class="block h-6 w-6" v-show="menuOpen" />
+                            <Bars3Icon class="block h-6 w-6" v-show="!menuOpen" />
                             <!-- Menu open: "block", Menu closed: "hidden" -->
-                            <svg class="hidden h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                                stroke="currentColor" aria-hidden="true">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-                            </svg>
+
                         </button>
                     </div>
                 </div>
@@ -58,15 +53,17 @@
             <!-- Mobile menu, show/hide based on menu state. -->
             <div class="sm:hidden" id="mobile-menu" v-show="menuOpen">
                 <div class="space-y-1 pb-3 pt-2">
-                    <!-- Current: "border-indigo-500 bg-indigo-50 text-indigo-700", Default: "border-transparent text-gray-600 hover:border-gray-300 hover:bg-gray-50 hover:text-gray-800" -->
+
                     <NuxtLink to="/"
-                        class="border-indigo-500 bg-indigo-50 text-indigo-700 block border-l-4 py-2 pl-3 pr-4 text-base font-medium"
-                        aria-current="page">Dashboard</NuxtLink>
+                        class="border-transparent text-gray-600 hover:border-gray-300 hover:bg-gray-50 hover:text-gray-800 block border-l-4 py-2 pl-3 pr-4 text-base font-medium"
+                        aria-current-value="page" active-class="router-active-mobile">Dashboard</NuxtLink>
                     <NuxtLink to="/travels"
-                        class="border-transparent text-gray-600 hover:border-gray-300 hover:bg-gray-50 hover:text-gray-800 block border-l-4 py-2 pl-3 pr-4 text-base font-medium">
+                        class="border-transparent text-gray-600 hover:border-gray-300 hover:bg-gray-50 hover:text-gray-800 block border-l-4 py-2 pl-3 pr-4 text-base font-medium"
+                        aria-current-value="page" active-class="router-active-mobile">
                         Travels</NuxtLink>
                     <NuxtLink to="/bookings"
-                        class="border-transparent text-gray-600 hover:border-gray-300 hover:bg-gray-50 hover:text-gray-800 block border-l-4 py-2 pl-3 pr-4 text-base font-medium">
+                        class="border-transparent text-gray-600 hover:border-gray-300 hover:bg-gray-50 hover:text-gray-800 block border-l-4 py-2 pl-3 pr-4 text-base font-medium"
+                        aria-current-value="page" active-class="router-active-mobile">
                         Bookings</NuxtLink>
 
                 </div>
@@ -86,6 +83,18 @@
 
 <script lang="ts" setup>
 
+import { Bars3Icon, XMarkIcon } from "@heroicons/vue/24/solid";
+
 const menuOpen = ref<boolean>(false)
 
 </script>
+
+<style>
+.router-active {
+    @apply border-indigo-500 text-gray-900
+}
+
+.router-active-mobile {
+    @apply border-indigo-500 bg-indigo-50 text-indigo-700
+}
+</style>
