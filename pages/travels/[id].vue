@@ -26,7 +26,13 @@
             <label for="Arrival">arrival</label>
             <input required min="0" max="100" type="datetime-local" v-model="travel.arrival">
         </fieldset>
-        <button type="submit">Save</button>
+        <div class="flex gap-3 pt-4">
+            <NuxtLink to="/travels">
+                <Button type="button" variant="danger">Cancel</Button>
+            </NuxtLink>
+
+            <Button type="submit" >Save</Button>
+        </div>
     </form>
     <div v-else>
         Not found

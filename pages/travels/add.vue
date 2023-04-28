@@ -26,11 +26,20 @@
             <label for="arrival">arrival</label>
             <input id="arrival" required min="0" max="100" type="datetime-local" v-model="travel.arrival">
         </fieldset>
-        <button type="submit">Save</button>
+
+        <div class="flex gap-3 pt-4">
+
+            <Button @click="router.back()" type="button" variant="danger">Cancel</Button>
+
+
+            <Button type="submit">Save</Button>
+        </div>
+
     </form>
 </template>
 
 <script setup lang="ts">
+import Button from '~/components/Button.vue';
 import { ITravel } from '~/types/travels';
 
 const router = useRouter()
@@ -44,7 +53,7 @@ async function submit() {
         }
 
     })
-    router.back()
+    router.replace('/travels')
 }
 
 
