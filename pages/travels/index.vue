@@ -12,6 +12,24 @@
                 </NuxtLink>
             </div>
         </div>
+        <div class="mt-6">
+            <h2 class="text-base font-semibold leading-6 text-gray-900">Search</h2>
+            <form class="flex gap-2" @submit.prevent="load">
+                <input v-model="search" type="text" name="search" id="search" autocomplete="off"
+                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6">
+
+                <div class="mt-2 sm:col-span-2 sm:mt-0 flex-col md:flex-row flex gap-2">
+                    <input type="datetime-local" v-model="departure" :max="arrival" name="departure" id="departure"
+                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6">
+                    <input type="datetime-local" v-model="arrival" :min="departure" name="arrival" id="arrival"
+                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6">
+                </div>
+
+                <Button :disabled="loading" type="submit" class="ml-auto">Search
+                </Button>
+
+            </form>
+        </div>
         <div class="mt-8 flow-root">
             <div class="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
                 <div class="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
@@ -59,6 +77,16 @@
 
                         </tbody>
                     </table>
+                    <nav class="flex items-center justify-between border-t border-gray-200 bg-white px-4 py-3 sm:px-6"
+                        aria-label="Pagination">
+
+                        <div class="flex flex-1 justify-between sm:justify-end">
+                            <button @click="previous" :disabled="loading || pageNr <= 0"
+                                class="disabled:opacity-50 relative inline-flex items-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus-visible:outline-offset-0">Previous</button>
+                            <button @click="next" :disabled="loading"
+                                class="disabled:opacity-50 relative ml-3 inline-flex items-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus-visible:outline-offset-0">Next</button>
+                        </div>
+                    </nav>
                 </div>
             </div>
         </div>
@@ -69,11 +97,51 @@
 import Button from "~/components/Button.vue"
 import type { ITravel } from "~/types/travels"
 import { formatTime } from '~/utils/DateTime'
+import { useRouteQuery } from "@vueuse/router";
 
-const { data } = await useFetch<Array<ITravel>>('/api/travels/')
+const search = useRouteQuery<string>("search", "");
+const arrival = useRouteQuery<string>("arrival", "");
+const departure = useRouteQuery<string>("departure", "");
+const page = useRouteQuery<string>("page", "0");
+const pageNr = computed(() => Number(page.value));
+
+const loading = ref<boolean>(false)
+const fetched = ref<Array<ITravel>>([])
+
+
+async function previous() {
+    page.value = Math.max(0, Number(page.value) - 1).toString();
+    await load();
+}
+async function next() {
+    page.value = (Number(page.value) + 1).toString();
+    await load();
+}
+
+
+async function load() {
+    if (loading.value) return
+    loading.value = true;
+    const nameParam = search.value ? `name=${search.value}` : ''
+    const departureParam = departure.value ? `&departure=${departure.value}` : ''
+    const arrivalParam = arrival.value ? `&arrival=${arrival.value}` : ''
+    const pageParam = page.value ? `&page=${page.value}` : ''
+    const params = [nameParam, departureParam, arrivalParam, pageParam].filter(Boolean).join('&');
+
+    try {
+
+        const { data } = await useFetch<Array<ITravel>>(`/api/travels?${params}`)
+        if (data.value) {
+            fetched.value = data.value
+        } else {
+            fetched.value = []
+        }
+    } catch { }
+    loading.value = false;
+}
 
 const travels = computed(() => {
-    return data.value?.map(travel => {
+    return fetched.value.map(travel => {
         return {
             id: travel.id,
             arrival: formatTime(new Date(travel.arrival)),
@@ -86,5 +154,7 @@ const travels = computed(() => {
         }
     })
 })
+
+await load();
 
 </script>

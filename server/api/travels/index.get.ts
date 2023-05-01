@@ -1,12 +1,11 @@
 import { ITravel } from "~/types/travels"
 import { getDateValue } from "~/utils/DateTime";
 import { generateUUID } from "~/utils/uuid";
+import { randomInt } from "~/utils/Numbers";
 
 export default defineEventHandler(({ node }) => {
 
-console.log("son qui")
-
-    let travels: Array<ITravel> = Array.from({ length: 5 }, (_, idx) => {
+    let travels: Array<ITravel> = Array.from({ length: 30 }, (_, idx) => {
 
         return {
             id: generateUUID(),
@@ -14,8 +13,8 @@ console.log("son qui")
             description: `The best travel in the world #${idx}`,
             arrival: getDateValue(new Date()),
             departure: getDateValue(new Date()),
-            price: 50000,
-            rating: 65,
+            price: randomInt(10000, 500000),
+            rating: randomInt(55, 100),
             image: "https://picsum.photos/500"
         }
 
