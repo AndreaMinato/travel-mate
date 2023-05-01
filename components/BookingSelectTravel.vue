@@ -28,7 +28,7 @@
                     class="group aspect-h-7 aspect-w-10 block w-full overflow-hidden rounded-lg bg-gray-100 focus-within:ring-2 focus-within:ring-indigo-500 focus-within:ring-offset-2 focus-within:ring-offset-gray-100">
                     <img :src="travel.image" alt="" class="pointer-events-none object-cover group-hover:opacity-75">
                     <button @click="$emit('update:travel', travel.id)" type="button"
-                        class="absolute inset-0 focus:outline-none">
+                        class="absolute inset-0 focus:outline-none w-full">
                         <span class="sr-only">Select {{ travel.name }}</span>
                     </button>
                 </div>
