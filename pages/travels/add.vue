@@ -152,11 +152,11 @@ async function submit() {
 
 
 const travel = ref<ITravel>({
-    name: "ff",
+    name: "",
     arrival: getDateValue(new Date()),
     departure: getDateValue(new Date()),
     rating: 0,
-    description: "u",
+    description: "",
     price: 0,
     id: "",
     image: ""

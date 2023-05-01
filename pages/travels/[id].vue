@@ -87,8 +87,8 @@
         </div>
 
         <div class="mt-6 flex items-center justify-end gap-x-6">
+            <Button @click="destroy" type="button" variant="danger" class="mr-auto">Delete</Button>
             <Button @click="router.back()" type="button" variant="secondary">Cancel</Button>
-            <Button @click="destroy" type="button" variant="danger">Delete</Button>
 
 
             <Button :disabled="disabled" type="submit">Save</Button>
