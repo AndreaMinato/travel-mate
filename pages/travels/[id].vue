@@ -115,6 +115,8 @@ const disabled = computed(() => {
     if (!travel.value?.price || travel.value.price < 1) return true
     if (!travel.value?.departure || !travel.value.arrival) return true
 
+    return false
+
 })
 
 const file = shallowRef()

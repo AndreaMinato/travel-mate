@@ -4,7 +4,7 @@ export interface IBooking {
     _travelId: string,
     id: string,
     userInfo: ICustomerInfo,
-    payment: PaymentType,
+    payment: IPaymentType,
     notes?: string
 }
 
@@ -23,11 +23,14 @@ export interface ICustomerInfo {
 
 export type Gender = "Male" | "Female" | "Non Bynary"
 
-type CrediTransfer = {
-    type: "CrediTransfer"
+type None = {
+    type: ""
+}
+type CreditTransfer = {
+    type: "CreditTransfer"
     cardNumber: string,
     name: string,
-    cvc: number
+    cvc: string
 }
 
 type Paypal = {
@@ -40,4 +43,4 @@ type Revolut = {
     accountName: string
 }
 
-export type PaymentType = CrediTransfer | Paypal | Revolut
+export type IPaymentType = None|CreditTransfer | Paypal | Revolut

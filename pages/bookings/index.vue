@@ -2,28 +2,20 @@
     <div class="px-4 sm:px-6 lg:px-8">
         <div class="sm:flex sm:items-center">
             <div class="sm:flex-auto">
-                <h1 class="text-base font-semibold leading-6 text-gray-900">Travels</h1>
-                <p class="mt-2 text-sm text-gray-700">Look at all those awesome places.</p>
+                <h1 class="text-base font-semibold leading-6 text-gray-900">Bookings</h1>
+                <p class="mt-2 text-sm text-gray-700">So many adventurous people booked with us.</p>
             </div>
             <div class="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
-                <NuxtLink to="/travels/add">
-                    <Button type="button">Add
-                        travel</Button>
+                <NuxtLink to="/bookings/add">
+                    <Button type="button">Book with us</Button>
                 </NuxtLink>
             </div>
         </div>
         <div class="mt-6">
             <h2 class="text-base font-semibold leading-6 text-gray-900">Search</h2>
-            <form class="flex gap-2" @submit.prevent="load()">
+            <form class="flex gap-2" @submit.prevent="load(true)">
                 <input v-model="search" type="text" name="search" id="search" autocomplete="off"
                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6">
-
-                <div class="mt-2 sm:col-span-2 sm:mt-0 flex-col md:flex-row flex gap-2">
-                    <input type="datetime-local" v-model="departure" :max="arrival" name="departure" id="departure"
-                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6">
-                    <input type="datetime-local" v-model="arrival" :min="departure" name="arrival" id="arrival"
-                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6">
-                </div>
 
                 <Button :disabled="loading" type="submit" class="ml-auto">Search
                 </Button>
@@ -39,40 +31,34 @@
                                 <th scope="col"
                                     class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-0">Travel
                                 </th>
-                                <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Dates</th>
-                                <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Price</th>
-                                <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Rating
+                                <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">User</th>
+                                <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Payment
                                 </th>
-                                <th scope="col" class="relative py-3.5 pl-3 pr-4 sm:pr-0">
-                                    <span class="sr-only">Edit</span>
+                                <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Notes
                                 </th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-gray-200 bg-white">
-                            <tr v-for="travel in travels" :key="travel.id">
+                            <tr v-for="booking in fetched" :key="booking.id">
                                 <td class="whitespace-nowrap py-5 pl-4 pr-3 text-sm sm:pl-0">
                                     <div class="flex items-center">
                                         <div class="">
-                                            <div class="font-medium text-gray-900">{{ travel.name }}</div>
-                                            <div class="mt-1 text-gray-500">{{ travel.description }}</div>
+                                            <div class="font-medium text-gray-900">{{ booking.travel.name }}</div>
+
                                         </div>
                                     </div>
                                 </td>
                                 <td class="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
-                                    <div class="text-gray-900">{{ travel.departure }} - {{ travel.arrival }}</div>
+                                    <div class="text-gray-900">{{ booking.userInfo.email }}</div>
 
                                 </td>
                                 <td class="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
                                     <span
                                         class="inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20">{{
-                                            travel.price }}</span>
+                                            booking.payment.type }}</span>
                                 </td>
-                                <td class="whitespace-nowrap px-3 py-5 text-sm text-gray-500">{{ travel.rating }}</td>
-                                <td
-                                    class="relative whitespace-nowrap py-5 pl-3 pr-4 text-right text-sm font-medium sm:pr-0">
-                                    <NuxtLink :to="`/travels/${travel.id}`" class="text-indigo-600 hover:text-indigo-900">
-                                        Edit<span class="sr-only">, {{ travel.name }}</span></NuxtLink>
-                                </td>
+                                <td class="whitespace-nowrap px-3 py-5 text-sm text-gray-500">{{ booking.notes }}</td>
+
                             </tr>
 
                         </tbody>
@@ -95,18 +81,16 @@
 
 <script setup lang="ts">
 import Button from "~/components/Button.vue"
-import type { ITravel } from "~/types/travels"
 import { formatTime } from '~/utils/DateTime'
 import { useRouteQuery } from "@vueuse/router";
+import { IBookingWithTravel } from "~/types/bookings";
 
 const search = useRouteQuery<string>("search", "");
-const arrival = useRouteQuery<string>("arrival", "");
-const departure = useRouteQuery<string>("departure", "");
 const page = useRouteQuery<string>("page", "0");
 const pageNr = computed(() => Number(page.value));
 
 const loading = ref<boolean>(false)
-const fetched = ref<Array<ITravel>>([])
+const fetched = ref<Array<IBookingWithTravel>>([])
 
 
 async function previous() {
@@ -122,19 +106,17 @@ async function next() {
 async function load(resetPage = true) {
     if (loading.value) return
     loading.value = true;
+
     if (resetPage) {
         page.value = '0'
     }
 
     try {
 
-        const { data } = await useFetch<Array<ITravel>>(`/api/travels`, {
+        const { data } = await useFetch(`/api/bookings`, {
             query: {
                 name: search.value,
-                departure: departure.value,
-                arrival: arrival.value,
-                page: page.value,
-
+                page: page.value
             }
         })
         if (data.value) {
@@ -146,20 +128,6 @@ async function load(resetPage = true) {
     loading.value = false;
 }
 
-const travels = computed(() => {
-    return fetched.value.map(travel => {
-        return {
-            id: travel.id,
-            arrival: formatTime(new Date(travel.arrival)),
-            departure: formatTime(new Date(travel.departure)),
-            image: travel.image,
-            name: travel.name,
-            description: travel.description,
-            price: `${travel.price / 100} €`,
-            rating: `${travel.rating}/100`
-        }
-    })
-})
 
 await load(false);
 
